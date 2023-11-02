@@ -7,9 +7,9 @@ FROM nvcr.io/nvidia/pytorch:23.06-py3
 WORKDIR /
 
 # Optional: System dependencies
-# COPY builder/setup.sh /setup.sh
-# RUN /bin/bash /setup.sh && \
-#     rm /setup.sh
+COPY builder/setup.sh /setup.sh
+RUN /bin/bash /setup.sh && \
+    rm /setup.sh
 
 # Python dependencies
 COPY builder/requirements.txt /requirements.txt
