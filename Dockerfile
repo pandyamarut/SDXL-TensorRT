@@ -14,8 +14,8 @@ RUN /bin/bash /setup.sh && \
 
 # Python dependencies
 COPY builder/requirements.txt /requirements.txt
-RUN python3.11 -m pip install --upgrade pip && \
-    python3.11 -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
     rm /requirements.txt
 
 # NOTE: The base image comes with multiple Python versions pre-installed.
@@ -25,4 +25,4 @@ RUN python3.11 -m pip install --upgrade pip && \
 # Add src files (Worker Template)
 ADD src .
 
-CMD python3.11 -u /handler.py
+CMD python3 -u /handler.py
