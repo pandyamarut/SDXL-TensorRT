@@ -25,7 +25,6 @@ apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 apt-get install git-lfs
 
-
 # Your custom commands go here
 # Clone the TensorRT repository and switch to the release/8.6 branch
 git clone https://github.com/rajeevsrao/TensorRT.git
@@ -36,7 +35,29 @@ git checkout release/8.6
 git lfs install
 git clone https://huggingface.co/stabilityai/stable-diffusion-xl-1.0-tensorrt
 cd stable-diffusion-xl-1.0-tensorrt
-git lfs pull
+
+# Run git lfs pull in the background
+git lfs pull &
+
+# Check the progress periodically
+while true; do
+  # Check the status
+  status=$(git lfs status)
+
+  # If there are no files in the "Downloading" status, exit
+  if [[ $status != *"Downloading"* ]]; then
+    echo "Git LFS downloads are complete."
+    break
+  fi
+
+  sleep 5  # Wait for 5 seconds before checking again
+done
+
+# Exit the git lfs pull process (if it's still running)
+pkill -f "git lfs pull"
+
+# Continue with the rest of your script
+# Install Python libraries and requirements
 cd ..
 
 # Install Python libraries and requirements
