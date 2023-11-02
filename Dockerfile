@@ -1,15 +1,15 @@
 # Base image -> https://github.com/runpod/containers/blob/main/official-templates/base/Dockerfile
-FROM runpod/base:0.1.0
+FROM nvcr.io/nvidia/pytorch:23.06-py3
 
 # The base image comes with many system dependencies pre-installed to help you get started quickly.
 # Please refer to the base image's Dockerfile for more information before adding additional dependencies.
 # IMPORTANT: The base image overrides the default huggingface cache location.
-
+WORKDIR /workspace
 
 # Optional: System dependencies
-# COPY builder/setup.sh /setup.sh
-# RUN /bin/bash /setup.sh && \
-#     rm /setup.sh
+COPY builder/setup.sh /setup.sh
+RUN /bin/bash /setup.sh && \
+    rm /setup.sh
 
 
 # Python dependencies

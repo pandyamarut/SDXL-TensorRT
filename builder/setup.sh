@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # NOTE: This script is not ran by default for the template docker image.
-#       If you use a custom base image you can add your required system dependencies here.
+#       If you use a custom base image, you can add your required system dependencies here.
 
 set -e # Stop script on error
 apt-get update && apt-get upgrade -y # Update System
@@ -19,5 +19,26 @@ update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py
 
-# Clean up, remove unnecessary packages and help reduce image size
-apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+# Clean up, remove unnecessary packages, and help reduce image size
+apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* 
+
+# Your custom commands go here
+# Clone the TensorRT repository and switch to the release/8.6 branch
+git clone https://github.com/rajeevsrao/TensorRT.git
+cd TensorRT
+git checkout release/8.6
+
+# Download the SDXL TensorRT files from the specified repository using Git LFS
+git lfs install
+git clone https://huggingface.co/stabilityai/stable-diffusion-xl-1.0-tensorrt
+cd stable-diffusion-xl-1.0-tensorrt
+git lfs pull
+cd ..
+
+# Install Python libraries and requirements
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade tensorrt
+
+# Navigate to the 'demo/Diffusion' directory and install its requirements
+cd demo/Diffusion
+pip3 install -r requirements.txt
