@@ -22,6 +22,10 @@ python3 get-pip.py
 # Clean up, remove unnecessary packages, and help reduce image size
 apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* 
 
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+apt-get install git-lfs
+
+
 # Your custom commands go here
 # Clone the TensorRT repository and switch to the release/8.6 branch
 git clone https://github.com/rajeevsrao/TensorRT.git
