@@ -29,6 +29,9 @@ COPY src/Diffusion /workspace/Diffusion
 
 COPY src/stable-diffusion-xl-1.0-tensorrt /workspace/stable-diffusion-xl-1.0-tensorrt
 
+
+RUN python3 src/rp_load_model.py
+
 ADD src .
 
 # Download the SDXL TensorRT files from the specified repository using Git LFS
