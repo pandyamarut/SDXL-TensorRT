@@ -109,7 +109,6 @@ if __name__ == "__main__":
             framework_model_dir=args.framework_model_dir)
 
         # Load TensorRT engines and pytorch modules
-        print("[I] hitting up the Engines ..")
         demo.loadEngines(engine_dir, args.framework_model_dir, onnx_dir, args.onnx_opset,
                          opt_batch_size=len(prompt), opt_image_height=image_height, opt_image_width=image_width,
                          force_export=args.force_onnx_export, force_optimize=args.force_onnx_optimize,
@@ -118,7 +117,6 @@ if __name__ == "__main__":
                          enable_refit=args.build_enable_refit, enable_preview=args.build_preview_features,
                          enable_all_tactics=args.build_all_tactics,
                          timing_cache=args.timing_cache, onnx_refit_dir=args.onnx_refit_dir)
-        print(demo)
         return demo
 
     demo_base = init_pipeline(Txt2ImgXLPipeline, False,
@@ -128,39 +126,44 @@ if __name__ == "__main__":
     max_device_memory = max(demo_base.calculateMaxDeviceMemory(
     ), demo_refiner.calculateMaxDeviceMemory())
     _, shared_device_memory = cudart.cudaMalloc(max_device_memory)
-    print("[I] Activating the Engines ..")
     demo_base.activateEngines(shared_device_memory)
     demo_refiner.activateEngines(shared_device_memory)
     demo_base.loadResources(image_height, image_width, batch_size, args.seed)
     demo_refiner.loadResources(
         image_height, image_width, batch_size, args.seed)
 
-    def run_sd_xl_inference(warmup=False, verbose=False):
-        images, time_base = demo_base.infer(prompt, negative_prompt, image_height, image_width,
-                                            warmup=warmup, verbose=verbose, seed=args.seed, return_type="latents")
-        images, time_refiner = demo_refiner.infer(
-            prompt, negative_prompt, images, image_height, image_width, warmup=warmup, verbose=verbose, seed=args.seed)
-        return images, time_base + time_refiner
+    print("[I] Loading Over")
 
-    if args.use_cuda_graph:
-        # inference once to get cuda graph
-        images, _ = run_sd_xl_inference(warmup=True, verbose=False)
+    # ----- Original Code ----- #
 
-    print("[I] Warming up ..")
-    for _ in range(args.num_warmup_runs):
-        images, _ = run_sd_xl_inference(warmup=True, verbose=False)
+    # below code will go into the worker funtion
 
-    print("[I] Running StableDiffusion pipeline")
-    if args.nvtx_profile:
-        cudart.cudaProfilerStart()
-    images, pipeline_time = run_sd_xl_inference(
-        warmup=False, verbose=args.verbose)
-    if args.nvtx_profile:
-        cudart.cudaProfilerStop()
+    # def run_sd_xl_inference(warmup=False, verbose=False):
+    #     images, time_base = demo_base.infer(prompt, negative_prompt, image_height, image_width,
+    #                                         warmup=warmup, verbose=verbose, seed=args.seed, return_type="latents")
+    #     images, time_refiner = demo_refiner.infer(
+    #         prompt, negative_prompt, images, image_height, image_width, warmup=warmup, verbose=verbose, seed=args.seed)
+    #     return images, time_base + time_refiner
 
-    print('|------------|--------------|')
-    print('| {:^10} | {:>9.2f} ms |'.format('e2e', pipeline_time))
-    print('|------------|--------------|')
+    # if args.use_cuda_graph:
+    #     # inference once to get cuda graph
+    #     images, _ = run_sd_xl_inference(warmup=True, verbose=False)
 
-    demo_base.teardown()
-    demo_refiner.teardown()
+    # print("[I] Warming up ..")
+    # for _ in range(args.num_warmup_runs):
+    #     images, _ = run_sd_xl_inference(warmup=True, verbose=False)
+
+    # print("[I] Running StableDiffusion pipeline")
+    # if args.nvtx_profile:
+    #     cudart.cudaProfilerStart()
+    # images, pipeline_time = run_sd_xl_inference(
+    #     warmup=False, verbose=args.verbose)
+    # if args.nvtx_profile:
+    #     cudart.cudaProfilerStop()
+
+    # print('|------------|--------------|')
+    # print('| {:^10} | {:>9.2f} ms |'.format('e2e', pipeline_time))
+    # print('|------------|--------------|')
+
+    # demo_base.teardown()
+    # demo_refiner.teardown()

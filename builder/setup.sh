@@ -20,8 +20,5 @@ curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py
 
 # Clean up, remove unnecessary packages, and help reduce image size
-apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* 
-
-curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
-apt-get install git-lfs
+apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
