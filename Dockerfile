@@ -23,7 +23,7 @@ RUN python3 -m pip install --upgrade pip && \
 # Add src files (Worker Template)
 
 # Copy the TensorRT directory to the container
-COPY src/Diffusion /workspace/Diffusion
+# COPY src/Diffusion /workspace/Diffusion
 
 # Copy the stable diffusion directory to the container
 
