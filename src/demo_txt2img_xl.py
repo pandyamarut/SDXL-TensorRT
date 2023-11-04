@@ -23,6 +23,7 @@ import torch
 from utilities import TRT_LOGGER, add_arguments
 from txt2img_xl_pipeline import Txt2ImgXLPipeline
 from img2img_xl_pipeline import Img2ImgXLPipeline
+import runpod
 
 
 def parseArgs():
@@ -51,7 +52,8 @@ def parseArgs():
     return parser.parse_args()
 
 
-if __name__ == "__main__":
+def handler(job):
+    """ Handler function that will be used to process jobs. """
     print("[I] Initializing TensorRT accelerated StableDiffusionXL txt2img pipeline")
     args = parseArgs()
 
@@ -164,3 +166,6 @@ if __name__ == "__main__":
 
     demo_base.teardown()
     demo_refiner.teardown()
+
+
+runpod.serverless.start({"handler": handler})
