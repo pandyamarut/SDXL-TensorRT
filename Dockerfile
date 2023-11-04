@@ -17,54 +17,11 @@ RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
     rm /requirements.txt
 
-# NOTE: The base image comes with multiple Python versions pre-installed.
-#       It is recommended to specify the version of Python when running your code.
-
-# Add src files (Worker Template)
-
-# Copy the TensorRT directory to the container
-# COPY src/Diffusion /workspace/Diffusion
-
-# Copy the stable diffusion directory to the container
-
 COPY src/stable-diffusion-xl-1.0-tensorrt /workspace/stable-diffusion-xl-1.0-tensorrt
 
-
+COPY src/rp_load_model.py /workspace/rp_load_model.py
 RUN python3 src/rp_load_model.py
 
 ADD src .
-
-# Download the SDXL TensorRT files from the specified repository using Git LFS
-# RUN git lfs install && \
-#     git clone https://huggingface.co/stabilityai/stable-diffusion-xl-1.0-tensorrt && \
-#     cd stable-diffusion-xl-1.0-tensorrtls
-
-# # Run git lfs pull in the background
-# RUN git lfs pull &
-
-# # Check the progress periodically
-# RUN while true; do \
-#   # Check the status
-#   status=$(git lfs status) \
-#   # If there are no files in the "Downloading" status, exit
-#   if [[ $status != *"Downloading"* ]]; then \
-#     echo "Git LFS downloads are complete." \
-#     break \
-#   fi \
-#   sleep 5  # Wait for 5 seconds before checking again \
-# done
-
-# Exit the git lfs pull process (if it's still running)
-# RUN pkill -f "git lfs pull"
-
-# Continue with the rest of your script
-# Install Python libraries and requirements
-# RUN cd TensorRT && \
-#     python3 -m pip install --upgrade pip && \
-#     python3 -m pip install --upgrade tensorrt
-
-# Navigate to the 'demo/Diffusion' directory and install its requirements
-# RUN cd demo/Diffusion && \
-#     pip3 install -r requirements.txt
     
 CMD python3 -u /handler.py
