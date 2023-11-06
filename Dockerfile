@@ -18,7 +18,7 @@ RUN python3 -m pip install --upgrade pip && \
     rm /requirements.txt
 
 
-# COPY src/Diffusion /workspace/Diffusion
+COPY src/Diffusion /workspace/Diffusion
 
 # Copy the stable diffusion directory to the container
 
