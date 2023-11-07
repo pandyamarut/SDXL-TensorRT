@@ -18,6 +18,13 @@ RUN python3 -m pip install --upgrade pip && \
     python3 -m pip install --upgrade -r /requirements.txt --no-cache-dir && \
     rm /requirements.txt
 
+
+ARG BASE_VOLUME="/runpod-volume/"
+ENV BASE_VOLUME=$BASE_VOLUME
+ENV HF_DATASETS_CACHE="${BASE_VOLUME}huggingface-cache/datasets"
+ENV HUGGINGFACE_HUB_CACHE="${BASE_VOLUME}huggingface-cache/hub"
+ENV TRANSFORMERS_CACHE="${BASE_VOLUME}huggingface-cache/hub"
+
 # NOTE: The base image comes with multiple Python versions pre-installed.
 #       It is recommended to specify the version of Python when running your code.
 

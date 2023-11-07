@@ -13,28 +13,55 @@ from txt2img_xl_pipeline import Txt2ImgXLPipeline
 from img2img_xl_pipeline import Img2ImgXLPipeline
 
 
-def parseArgs():
+# def parseArgs():
+#     parser = argparse.ArgumentParser(
+#         description="Options for Stable Diffusion XL Txt2Img Demo", conflict_handler='resolve')
+#     parser = add_arguments(parser)
+#     parser.add_argument('--version', type=str, default="xl-1.0",
+#                         choices=["xl-1.0"], help="Version of Stable Diffusion XL")
+#     parser.add_argument('--height', type=int, default=1024,
+#                         help="Height of image to generate (must be multiple of 8)")
+#     parser.add_argument('--width', type=int, default=1024,
+#                         help="Height of image to generate (must be multiple of 8)")
+
+#     parser.add_argument('--scheduler', type=str, default="DDIM", choices=[
+#                         "PNDM", "LMSD", "DPM", "DDIM", "EulerA"], help="Scheduler for diffusion process")
+
+#     parser.add_argument('--onnx-base-dir', default='onnx_xl_base',
+#                         help="Directory for SDXL-Base ONNX models")
+#     parser.add_argument('--onnx-refiner-dir', default='onnx_xl_refiner',
+#                         help="Directory for SDXL-Refiner ONNX models")
+#     parser.add_argument('--engine-base-dir', default='engine_xl_base',
+#                         help="Directory for SDXL-Base TensorRT engines")
+#     parser.add_argument('--engine-refiner-dir', default='engine_xl_refiner',
+#                         help="Directory for SDXL-Refiner TensorRT engines")
+
+#     return parser.parse_args()
+
+
+def parseArgsHardCoded():
     parser = argparse.ArgumentParser(
         description="Options for Stable Diffusion XL Txt2Img Demo", conflict_handler='resolve')
-    parser = add_arguments(parser)
-    parser.add_argument('--version', type=str, default="xl-1.0",
-                        choices=["xl-1.0"], help="Version of Stable Diffusion XL")
-    parser.add_argument('--height', type=int, default=1024,
-                        help="Height of image to generate (must be multiple of 8)")
+
+    # Hardcoded arguments
+    parser.add_argument('prompt', type=str,
+                        help="Text prompt for generating images")
+    parser.add_argument('--build-static-batch', action='store_true',
+                        help="Build with a static batch size")
+    parser.add_argument('--use-cuda-graph', action='store_true',
+                        help="Use CUDA graph for inference")
+    parser.add_argument('--num-warmup-runs', type=int, default=1,
+                        help="Number of warmup runs")
     parser.add_argument('--width', type=int, default=1024,
-                        help="Height of image to generate (must be multiple of 8)")
-
-    parser.add_argument('--scheduler', type=str, default="DDIM", choices=[
-                        "PNDM", "LMSD", "DPM", "DDIM", "EulerA"], help="Scheduler for diffusion process")
-
-    parser.add_argument('--onnx-base-dir', default='onnx_xl_base',
+                        help="Width of the image to generate (must be multiple of 8)")
+    parser.add_argument('--height', type=int, default=1024,
+                        help="Height of the image to generate (must be multiple of 8)")
+    parser.add_argument('--denoising-steps', type=int, default=30,
+                        help="Number of denoising steps")
+    parser.add_argument('--onnx-base-dir', type=str, default="/workspace/stable-diffusion-xl-1.0-tensorrt/sdxl-1.0-base",
                         help="Directory for SDXL-Base ONNX models")
-    parser.add_argument('--onnx-refiner-dir', default='onnx_xl_refiner',
+    parser.add_argument('--onnx-refiner-dir', type=str, default="/workspace/stable-diffusion-xl-1.0-tensorrt/sdxl-1.0-refiner",
                         help="Directory for SDXL-Refiner ONNX models")
-    parser.add_argument('--engine-base-dir', default='engine_xl_base',
-                        help="Directory for SDXL-Base TensorRT engines")
-    parser.add_argument('--engine-refiner-dir', default='engine_xl_refiner',
-                        help="Directory for SDXL-Refiner TensorRT engines")
 
     return parser.parse_args()
 
@@ -42,7 +69,7 @@ def parseArgs():
 def handler(job):
     """ Handler function that will be used to process jobs. """
     print("[I] Initializing TensorRT accelerated StableDiffusionXL txt2img pipeline")
-    args = parseArgs()
+    args = parseArgsHardCoded()
 
     # Process prompt
     if not isinstance(args.prompt, list):
