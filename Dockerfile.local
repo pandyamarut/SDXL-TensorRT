@@ -1,0 +1,13 @@
+# Use a base image of your choice
+FROM nvcr.io/nvidia/pytorch:23.06-py3
+
+# Set the working directory in the image
+WORKDIR /workspace
+
+# Copy the contents of the /workspace directory into the image
+COPY /workspace /workspace
+
+# Other instructions for your image if needed
+
+# Specify the default command to run when the container starts
+CMD ["python3", "-u", "/workspace/handler.py"] 

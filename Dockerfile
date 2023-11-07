@@ -27,37 +27,13 @@ COPY src/stable-diffusion-xl-1.0-tensorrt /workspace/stable-diffusion-xl-1.0-ten
 
 ADD src .
 
-# Download the SDXL TensorRT files from the specified repository using Git LFS
-# RUN git lfs install && \
-#     git clone https://huggingface.co/stabilityai/stable-diffusion-xl-1.0-tensorrt && \
-#     cd stable-diffusion-xl-1.0-tensorrtls
-
-# # Run git lfs pull in the background
-# RUN git lfs pull &
-
-# # Check the progress periodically
-# RUN while true; do \
-#   # Check the status
-#   status=$(git lfs status) \
-#   # If there are no files in the "Downloading" status, exit
-#   if [[ $status != *"Downloading"* ]]; then \
-#     echo "Git LFS downloads are complete." \
-#     break \
-#   fi \
-#   sleep 5  # Wait for 5 seconds before checking again \
-# done
-
-# Exit the git lfs pull process (if it's still running)
-# RUN pkill -f "git lfs pull"
-
-# Continue with the rest of your script
-# Install Python libraries and requirements
-# RUN cd TensorRT && \
-#     python3 -m pip install --upgrade pip && \
-#     python3 -m pip install --upgrade tensorrt
-
-# Navigate to the 'demo/Diffusion' directory and install its requirements
-# RUN cd demo/Diffusion && \
-#     pip3 install -r requirements.txt
-    
-CMD ["python3", "-u", "/workspace/handler.py"]
+CMD ["python3", "-u", "/workspace/Diffusion/demo_txt2img_xl.py", \
+  "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k", \
+  "--build-static-batch", \
+  "--use-cuda-graph", \
+  "--num-warmup-runs", "1", \
+  "--width", "1024", \
+  "--height", "1024", \
+  "--denoising-steps", "30", \
+  "--onnx-base-dir", "/workspace/stable-diffusion-xl-1.0-tensorrt/sdxl-1.0-base", \
+  "--onnx-refiner-dir", "/workspace/stable-diffusion-xl-1.0-tensorrt/sdxl-1.0-refiner"]
