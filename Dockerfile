@@ -23,7 +23,11 @@ COPY src/Diffusion /workspace/Diffusion
 # Copy the stable diffusion directory to the container
 COPY src/stable-diffusion-xl-1.0-tensorrt /workspace/stable-diffusion-xl-1.0-tensorrt
 
+# Copy the entry point script to the container
+COPY src/entrypoint.sh /workspace/entrypoint.sh
 
+# Make the entry point script executable
+RUN chmod +x /workspace/entrypoint.sh
 
 ADD src .
 
