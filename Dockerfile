@@ -28,7 +28,7 @@ COPY src/stable-diffusion-xl-1.0-tensorrt /workspace/stable-diffusion-xl-1.0-ten
 ADD src .
 
 # Set the entrypoint
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/workspace/entrypoint.sh"]
 
 
 CMD ["python3", "-u", "/workspace/handler.py"] 
