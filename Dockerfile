@@ -28,11 +28,10 @@ COPY src/entrypoint.sh /workspace/entrypoint.sh
 
 # Make the entry point script executable
 RUN chmod +x /workspace/entrypoint.sh
-
+# Set the entrypoint
 ADD src .
 
-# Set the entrypoint
-ENTRYPOINT ["/workspace/entrypoint.sh"]
+# ENTRYPOINT ["/workspace/entrypoint.sh"]
 
 
 CMD ["python3", "-u", "/workspace/handler.py"] 
