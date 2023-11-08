@@ -34,4 +34,4 @@ ADD src .
 # ENTRYPOINT ["/workspace/entrypoint.sh"]
 
 
-CMD ["python3", "-u", "/workspace/handler.py"] 
+CMD ["python3", "-u", "/workspace/Diffusion/handler.py"] 
